@@ -12,9 +12,23 @@ const app = express();
 
 connectDB();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://devassist-ai-frontend.vercel.app",
+];
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS not allowed for origin: ${origin}`));
+    },
     credentials: true,
   })
 );
